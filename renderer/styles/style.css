@@ -46,7 +46,7 @@
   margin: 0px 3% 0px 2%;
   text-overflow: ellipsis;
   -webkit-line-clamp: 2;
-  line-height: 1.8;
+  line-height: 1.2;
   -webkit-box-orient: vertical;
   display: -webkit-inline-box;
 }
@@ -479,8 +479,8 @@ audio.qc-vertical-audio {
 
 .qc-horizontal-audio {
   position: absolute;
-  width: 10%;
-  margin-left: 5%;
+  width: 20%;
+  margin-left: -5%;
   vertical-align: super;
 }
 
@@ -498,6 +498,7 @@ audio.qc-vertical-audio {
 
 .mcq-question-text {
   display: inline;
+  line-height: 1em;
 }
 
 .mcq-question-audio {
@@ -781,6 +782,24 @@ span.qc-option-txt{
   background-color: #65A0E6;
   outline: 1px solid slategrey;
 }
+
+
+.qc-vertical-option-container::-webkit-scrollbar {
+   height: 5%;
+   border-radius: 5px;
+}
+ 
+.qc-vertical-option-container::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 5px;
+}
+ 
+.qc-vertical-option-container::-webkit-scrollbar-thumb {
+  background-color: #65A0E6;
+  outline: 1px solid slategrey;
+  border-radius: 5px;
+}
+
 
 .mcq-horizontal-container .selected {
   border-radius: 5px;
