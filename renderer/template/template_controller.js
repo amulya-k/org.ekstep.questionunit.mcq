@@ -3,7 +3,8 @@ MCQController.initTemplate = function (pluginInstance) {
   MCQController.pluginInstance = pluginInstance;
 };
 MCQController.loadTemplateContent = function () {
-  return "<div id='qs-mcq-template'><div id='qc-mcqlayout'></div></div>";
+  //return "<div id='qs-mcq-template'><div id='qc-mcqlayout'></div></div>";
+  return "<div id='mcq-question-container'></div>";
 };
 MCQController.isMediaAsset = function (question) {
   MCQController.isAudioIcon = !_.isUndefined(_.find(question.data.options, "audio")) ? true : false;
@@ -12,11 +13,13 @@ MCQController.isMediaAsset = function (question) {
 // MCQController.audioIcon = MCQController.pluginInstance.getAssetUrl('audio-icon.png');
 // MCQController.expandIcon = MCQController.pluginInstance.getAssetUrl('expand-icon.png');
 MCQController.renderQuestion = function () {
-  var template = _.template(MCQController.getQuesLayout());
-  $("#qc-mcqlayout").html(template({
+  /*var template = _.template(MCQController.getQuesLayout());
+  $("#mcq-question-container").html(template({
     question: MCQController.pluginInstance._question
-  }));
+  }));*/
   MCQController.renderTemplateLayout(MCQController.pluginInstance._question);
+  MCQController.deselectAll();
+  MCQController.registerClick();
 };
 /**
  * render template using underscore
@@ -40,7 +43,7 @@ MCQController.renderTemplateLayout = function (question) {
     default:
       template = _.template(MCQController.getHorizontalTemplate(question));
   }
-  $("#qc-mcqlayout").append(template({
+  $("#mcq-question-container").append(template({
     question: question
   }));
 };
@@ -82,7 +85,7 @@ MCQController.getQuesLayout = function () {
  */
 MCQController.showImageModel = function () {
   var eventData = event.target.src;
-  var modelTemplate = "<div class='popup image-model-popup' id='image-model-popup' onclick='MCQController.hideImageModel()'><div class='popup-overlay' onclick='MCQController.hideImageModel()'></div> \
+  var modelTemplate = "<div class='popup' id='image-model-popup' onclick='MCQController.hideImageModel()'><div class='popup-overlay' onclick='MCQController.hideImageModel()'></div> \
     <div class='popup-full-body'> \
       <div class='font-lato assess-popup assess-goodjob-popup'> \
         <img class='qc-question-fullimage' src=<%= src %> /> \
@@ -93,7 +96,7 @@ MCQController.showImageModel = function () {
   var templateData = template({
     src: eventData
   })
-  $("#qs-mcq-template").append(templateData);
+  $("#mcq-question-container").append(templateData);
 };
 /**
  * onclick overlay or X button the popup will be hide
@@ -127,10 +130,7 @@ MCQController.openPopup = function (id) {
   } else {
     data = MCQController.pluginInstance._question.data.options[id];
   }
-  var mcqpopupTemplate = " <div class='mcq-expand-popup'>\
-  <div class='popup' style='z-index: 9999999'>\
-   <div class='popup-overlay'></div>\
-   <div class='mcq-popup-full-body'>\
+  var mcqpopupTemplate = "<div class = 'mcq-expand-popup'>\
     <div class = 'mcq-popup-container'>\
       <div class = 'mcq-popup-text'>\
         <%if(!_.isEmpty(data.image)){%> \
@@ -146,27 +146,39 @@ MCQController.openPopup = function (id) {
         <div class='mcq-popup-text-content'>\
         <%= data.text %>\
         </div>\
-        </div>\
+      </div>\
       <div class = 'mcq-popup-actions'>\
         <button class = 'mcq-popup-back-button' onclick=MCQController.closePopup();><%= (MCQController.currentPopUp == 'question') ? 'Answer' : 'Back' %></button>\
-       </div>\
+      </div>\
     </div>\
-     </div>\
-       </div>\
   </div>";
-    var template = _.template(mcqpopupTemplate);
-    
-    var templateData = template({
-      data: data
-    })
-    $("#questionset").append(templateData);
-    EkstepRendererAPI.dispatchEvent('org.ekstep.questionunit:rendermath');
+  var template = _.template(mcqpopupTemplate);
+
+  var templateData = template({
+    data: data
+  })
+  $(".mcq-horizontal-container").append(templateData);
+  EkstepRendererAPI.dispatchEvent('org.ekstep.questionunit:rendermath');
 };
 
 MCQController.closePopup = function () {
   $(".mcq-expand-popup").remove();
 };
 
+MCQController.deselectAll = function () {
+  $(".check-image").hide();
+  $(".tick-icon-holder").hide();
+}
 
+MCQController.registerClick = function () {
+  $(".mcq-option").click(function () {
+    $(".check-image").hide();
+    $(this).find(".check-image").show();
+  })
+  $(".text-option").click(function () {
+    $(".tick-icon-holder").hide();
+    $(this).find(".tick-icon-holder").show();
+  })
+}
 
 //# sourceURL=MCQController.js
