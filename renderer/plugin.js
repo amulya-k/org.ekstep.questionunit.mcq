@@ -17,8 +17,8 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
     mcqSelectOption: ".mcq-option-value",
     optionSelectionUI: "qsselectedopt"
   },
-  _defaultImageIcon:"default-image.png",
-  _defaultAudioIcon:"audio.png",
+  _defaultImageIcon: "default-image.png",
+  _defaultAudioIcon: "audio.png",
   _selectedIndex: undefined,
   _lastAudio: undefined,
   _currentAudio: undefined,
@@ -51,7 +51,7 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
     if (this._question.state && _.has(this._question.state, 'val')) {
       this._selectedIndex = this._question.state.val;
       $("input[name='radio']", $(this._constant.mcqParentDiv))[this._selectedIndex].checked = true; // eslint-disable-line no-undef
-      if(this._question.config.layout == "Horizontal"){
+      if (this._question.config.layout == "Horizontal") {
         $($("input[name='radio']")[this._selectedIndex]).parents('.option').addClass('selected');
       }
     } else {
@@ -66,7 +66,7 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
   divideOption: function (questionData) {
     questionData.topOptions = [], questionData.bottomOptions = [];
     questionData.options.forEach(function (option, key) {
-      var obj = {'option': option, 'keyIndex': key};
+      var obj = { 'option': option, 'keyIndex': key };
       if (questionData.options.length <= 4 || questionData.options.length > 6) {
         if (key < 4) questionData.topOptions.push(obj);
         else questionData.bottomOptions.push(obj);
@@ -83,8 +83,8 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
    */
   evaluateQuestion: function (event) {
     var callback = event.target;
-    var correctAnswer = false, telValues = {}, selectedAnsData, selectedAns, result = {},option;
-    option=MCQController.pluginInstance._question.data.options;// eslint-disable-line no-undef
+    var correctAnswer = false, telValues = {}, selectedAnsData, selectedAns, result = {}, option;
+    option = MCQController.pluginInstance._question.data.options;// eslint-disable-line no-undef
     selectedAnsData = option[MCQController.pluginInstance._selectedIndex]; // eslint-disable-line no-undef
     selectedAns = _.isUndefined(selectedAnsData) ? false : selectedAnsData.isCorrect;
     option.forEach(function (option) { // eslint-disable-line no-undef
@@ -113,28 +113,28 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
    * @returns {String} url.
    * @param {String} icon from question set.
    */
-  getDefaultAsset:function(icon){
-     //In browser and device base path is different so we have to check
-    if(isbrowserpreview){// eslint-disable-line no-undef
-      return this.getAssetUrl(org.ekstep.pluginframework.pluginManager.resolvePluginResource(this._manifest.id, this._manifest.ver, "renderer/assets/"+icon));
+  getDefaultAsset: function (icon) {
+    //In browser and device base path is different so we have to check
+    if (isbrowserpreview) {// eslint-disable-line no-undef
+      return this.getAssetUrl(org.ekstep.pluginframework.pluginManager.resolvePluginResource(this._manifest.id, this._manifest.ver, "renderer/assets/" + icon));
     }
-    else{
+    else {
       //static url
-      return this.getAssetUrl("/content-plugins/"+this._manifest.id+"-"+this._manifest.ver+"/renderer/assets/"+icon);
+      return this.getAssetUrl("/content-plugins/" + this._manifest.id + "-" + this._manifest.ver + "/renderer/assets/" + icon);
     }
   },
-   /**
-   * provide media url to asset
-   * @memberof org.ekstep.questionunit.mcq
-   * @param {String} url from question set.
-   * @returns {String} url.
-   */
-  getAssetUrl:function(url){
-    if(isbrowserpreview){// eslint-disable-line no-undef
+  /**
+  * provide media url to asset
+  * @memberof org.ekstep.questionunit.mcq
+  * @param {String} url from question set.
+  * @returns {String} url.
+  */
+  getAssetUrl: function (url) {
+    if (isbrowserpreview) {// eslint-disable-line no-undef
       return url;
     }
-    else{
-      return 'file:///' + EkstepRendererAPI.getBaseURL()+ url;
+    else {
+      return 'file:///' + EkstepRendererAPI.getBaseURL() + url;
     }
   },
   /**
@@ -181,25 +181,47 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
       "type": "MCQ",
       "values": [telValues]
     });
-     /**
-   * renderer:questionunit.mcq:save question set state.
-   * @event renderer:questionunit.mcq:dispatch
-   * @memberof org.ekstep.questionunit.mcq
-   */
+  },
+
+  /**
+ * onclick option the function call
+ * @memberof org.ekstep.questionunit.mcq
+ * @param {event} event from question set.
+ * @param {Integer} index from question set.
+ */
+  onOptionSelected: function (event, index) {
+    var state = {}, value, telValues = {};
+    value = this._question.data.options[index];
+    this._selectedIndex = index; // eslint-disable-line no-undef
+    state = {
+      val: this._selectedIndex, // eslint-disable-line no-undef
+      options: this._question.data.options, // eslint-disable-line no-undef
+      score: this._question.config.max_score // eslint-disable-line no-undef
+    };
+    telValues['option' + index] = value.image.length > 0 ? value.image : value.text;
+    QSTelemetryLogger.logEvent(QSTelemetryLogger.EVENT_TYPES.RESPONSE, { // eslint-disable-line no-undef
+      "type": "MCQ",
+      "values": [telValues]
+    });
+    /**
+  * renderer:questionunit.mcq:save question set state.
+  * @event renderer:questionunit.mcq:dispatch
+  * @memberof org.ekstep.questionunit.mcq
+  */
     EkstepRendererAPI.dispatchEvent('org.ekstep.questionset:saveQuestionState', state);
   },
   selectOptionUI: function (event) {
-    if(this._question.config.layout != "Horizontal"){
+    if (this._question.config.layout != "Horizontal") {
       if ($(event.target).hasClass(this._constant.mcqSelectOption.replace(".", ""))) {
-      $(event.target).addClass(this._constant.optionSelectionUI);
+        $(event.target).addClass(this._constant.optionSelectionUI);
       } else {
         $(event.target).parents(this._constant.mcqSelectOption).addClass(this._constant.optionSelectionUI);
       }
-    }else{
+    } else {
       $('.option').removeClass('selected');
       $(event.target).parents('.option').toggleClass('selected');
     }
-    
+
     //event.stopPropagation(); //stop event because its added in all child template
   },
   logTelemetryInteract: function (event) {
