@@ -35,13 +35,13 @@ MCQController.renderTemplateLayout = function (question) {
       template = _.template(MCQController.getGridTemplate(question));
       break;
     case "Horizontal":
-      template = _.template(MCQController.getHorizontalTemplate(question));
+      template = _.template(MCQController.getMcq2Template(question));
       break;
     case "Vertical":
       template = _.template(MCQController.getVerticalTemplate(question));
       break;
     default:
-      template = _.template(MCQController.getHorizontalTemplate(question));
+      template = _.template(MCQController.getMcq2Template(question));
   }
   $("#mcq-question-container").append(template({
     question: question
@@ -166,17 +166,21 @@ MCQController.closePopup = function () {
 };
 
 MCQController.deselectAll = function () {
-  $(".check-image").hide();
+  $(".mcq2-2-check-image").hide();
   $(".tick-icon-holder").hide();
 }
 
 MCQController.registerClick = function () {
-  $(".mcq-option").click(function () {
-    $(".check-image").hide();
-    $(this).find(".check-image").show();
+  $(".mcq2-2-option").click(function () {
+    $(".mcq2-2-check-image").hide();
+    $(this).find(".mcq2-2-check-image").show();
   })
   $(".text-option").click(function () {
+    $(".text-option").removeClass("selected-option-bg");
+    $(".text-option").addClass("option-background");
     $(".tick-icon-holder").hide();
+    $(this).removeClass("option-background");
+    $(this).addClass("selected-option-bg");
     $(this).find(".tick-icon-holder").show();
   })
 }
