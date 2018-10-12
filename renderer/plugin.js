@@ -138,11 +138,6 @@ org.ekstep.questionunitmcq.RendererPlugin = org.ekstep.contentrenderer.questionU
       "values": [telValues]
     });
     /**
-  * renderer:questionunit.mcq:save question set state.
-  * @event renderer:questionunit.mcq:dispatch
-  * @memberof org.ekstep.questionunit.mcq
-  */
-    EkstepRendererAPI.dispatchEvent('org.ekstep.questionset:saveQuestionState', state);
   },
 
   logTelemetryInteract: function (event) {
